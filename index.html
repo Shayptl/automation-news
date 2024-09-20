@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חדשות האוטומציה 🤖</title>
+    <link rel="icon" href="https://i.ibb.co/f8XrnHj/image.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <meta property="og:title" content="חדשות האוטומציה - כל מה שמפתח אוטומציה צריך לדעת">
+    <meta property="og:description" content="עדכונים חמים מעולם האוטומציה - פיצ'רים חדשים, הודעות על נפילות זמניות, וטיפים שווים">
+    <meta property="og:image" content="https://i.ibb.co/BBxdNs3/Green.png">
+    <meta property="og:url" content="https://shayptl.github.io/automation-news">
+    <meta property="og:type" content="website">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <img src="https://i.ibb.co/0hfq7Fn/image.jpg" alt="חדשות האוטומציה לוגו" class="logo fadeInUp">
+            <h1 class="fadeInUp">חדשות האוטומציה 🤖</h1>
+            <p class="subtitle fadeInUp">כל מה שמפתח אוטומציה צריך לדעת - במקום אחד!</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="intro fadeInUp">
+            <h2>ברוכים הבאים לחדשות האוטומציה!</h2>
+            <p>כאן תמצאו את כל העדכונים החמים מעולם האוטומציה - פיצ'רים חדשים, הודעות על נפילות זמניות של מערכות, וטיפים שווים שכל מפתח אוטומציה צריך לדעת. התעדכנו ושפרו את העבודה שלכם!</p>
+        </section>
+
+        <section class="news-container fadeInUp">
+            <h2>חדשות ועדכונים</h2>
+            <div id="loadingSpinner" class="loading-spinner"></div>
+            <div class="news-grid" id="newsGrid">
+                <!-- News items will be dynamically added here -->
+            </div>
+            <div class="load-more">
+                <button class="btn" id="loadMoreBtn">טען עוד</button>
+            </div>
+        </section>
+
+        <section class="join-form fadeInUp">
+            <h2>רוצים להצטרף לצוות ולהעלות גם עדכונים ל'חדשות האוטומציה'?</h2>
+            <form id="joinForm">
+                <label for="fullName">שם מלא:</label>
+                <input type="text" id="fullName" name="fullName" required>
+                
+                <label for="phone">טלפון:</label>
+                <input type="tel" id="phone" name="phone" required>
+                
+                <label for="expertise">תחום מומחיות:</label>
+                <select id="expertise" name="expertise" required>
+                    <option value="">בחר תחום מומחיות</option>
+                    <!-- Options will be dynamically populated -->
+                </select>
+                
+                <button type="submit">שלח</button>
+            </form>
+        </section>
+
+        <section class="cta fadeInUp">
+            <h2>נהנים מהתוכן?</h2>
+            <p>אם מצאתם את המידע שלנו שימושי, נשמח אם תפרגנו לנו ותאפשרו לנו להמשיך לספק לכם את החדשות והעדכונים החמים ביותר בעולם האוטומציה!</p>
+            <a href="https://shayptl.github.io/buy-me-coffee" class="btn pulse" id="appreciateBtn">פרגנו לנו!</a>
+        </section>
+
+<section class="social-links fadeInUp">
+    <h3>עקבו אחרינו לעדכונים נוספים:</h3>
+    <div class="social-buttons">
+        <a href="#" id="facebookLink" title="עקבו אחרינו בפייסבוק">
+            <i class="fab fa-facebook"></i>
+            <span>פייסבוק</span>
+        </a><!--
+        <a href="#" id="twitterLink" title="עקבו אחרינו בטוויטר">
+            <i class="fab fa-twitter"></i>
+            <span>טוויטר</span>
+        </a>
+        <a href="#" id="linkedinLink" title="עקבו אחרינו בלינקדאין">
+            <i class="fab fa-linkedin"></i>
+            <span>לינקדאין</span>
+        </a>-->
+    </div>
+</section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Shay Digital Services</p>
+    </footer>
+
+    <div class="floating-btn">
+        <a href="https://shayptl.github.io/buy-me-coffee" class="btn pulse" id="floatingAppreciateBtn">☕</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
