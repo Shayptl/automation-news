@@ -29,8 +29,8 @@
 
     <div class="container">
         <section class="intro fadeInUp">
-            <h2>ברוכים הבאים לחדשות האוטומציה!</h2>
-            <p>כאן תמצאו את כל העדכונים החמים מעולם האוטומציה - פיצ'רים חדשים, הודעות על נפילות זמניות של מערכות, וטיפים שווים שכל מפתח אוטומציה צריך לדעת. התעדכנו ושפרו את העבודה שלכם!</p>
+            <h2>ברוכים הבאים לחדשות האוטומציה 👋🏻</h2>
+            <p>כאן תמצאו את כל העדכונים החמים מעולם האוטומציה - פיצ'רים חדשים, הודעות על נפילות זמניות של מערכות, וטיפים שווים שכל מפתח אוטומציה צריך לדעת. להישאר מעודכנים זה חובה!</p>
         </section>
 
         <section class="news-container fadeInUp">
@@ -45,7 +45,7 @@
         </section>
 
         <section class="join-form fadeInUp">
-            <h2>רוצים להצטרף לצוות ולהעלות גם עדכונים ל'חדשות האוטומציה'?</h2>
+            <h2>רוצים להצטרף לצוות שלנו ולהעלות גם עדכונים ל'חדשות האוטומציה'?</h2>
             <form id="joinForm">
                 <label for="fullName">שם מלא:</label>
                 <input type="text" id="fullName" name="fullName" required>
@@ -69,13 +69,13 @@
             <a href="https://shayptl.github.io/buy-me-coffee" class="btn pulse" id="appreciateBtn">פרגנו לנו!</a>
         </section>
 
-<section class="social-links fadeInUp">
+<!--<section class="social-links fadeInUp">
     <h3>עקבו אחרינו לעדכונים נוספים:</h3>
     <div class="social-buttons">
         <a href="#" id="facebookLink" title="עקבו אחרינו בפייסבוק">
             <i class="fab fa-facebook"></i>
             <span>פייסבוק</span>
-        </a><!--
+        </a>
         <a href="#" id="twitterLink" title="עקבו אחרינו בטוויטר">
             <i class="fab fa-twitter"></i>
             <span>טוויטר</span>
@@ -85,15 +85,37 @@
             <span>לינקדאין</span>
         </a>-->
     </div>
+    
+        <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <div class="modal-author">
+                    <img id="modalAuthorImg" src="" alt="">
+                    <div>
+                        <div id="modalAuthorName"></div>
+                        <div id="modalAuthorDescription"></div>
+                    </div>
+                </div>
+                <div class="modal-date" id="modalDate"></div>
+            </div>
+        </div>
+    </div>
+    
 </section>
+
+
     </div>
 
     <footer>
-        <p>&copy; 2024 Shay Digital Services</p>
+		<p>האתר נבנה ומתעדכן על ידי:</p>
+        <p>Shay Digital Services&copy;</p>
     </footer>
 
     <div class="floating-btn">
-        <a href="https://shayptl.github.io/buy-me-coffee" class="btn pulse" id="floatingAppreciateBtn">☕</a>
+        <a href="https://shayptl.github.io/buy-me-coffee" class="btn pulse" id="floatingAppreciateBtn">נהנים מהתוכן?</a>
     </div>
 
     <script src="script.js"></script>
