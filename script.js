@@ -62,18 +62,41 @@ function calculateItemsPerRow() {
 function loadNewsItems() {
     const newsGrid = document.getElementById('newsGrid');
     const itemsPerRow = calculateItemsPerRow();
-    const itemsToLoad = itemsPerRow * 2; // Load two rows worth of items
+    const itemsToLoad = itemsPerRow * 2;
     const endIndex = Math.min(currentIndex + itemsToLoad, newsItems.length);
     
     for (let i = currentIndex; i < endIndex; i++) {
         const item = newsItems[i];
         const newsItemElement = document.createElement('div');
         newsItemElement.className = 'news-item';
+        
+        // Replace newlines with <br> tags for proper display
+        let formattedContent = item.content.replace(/\n/g, '<br>');
+        
+        // Check if content is long or contains an image
+        let hasImage = formattedContent.includes('<img');
+        let shouldTruncate = formattedContent.length > 100 || hasImage;
+        let displayContent;
+
+        if (hasImage) {
+            // If there's an image, show only the first paragraph or a portion of text before the image
+            let textBeforeImage = formattedContent.split('<img')[0];
+            displayContent = textBeforeImage.length > 100 ? textBeforeImage.substring(0, 100) + '...' : textBeforeImage;
+        } else {
+            displayContent = shouldTruncate 
+                ? formattedContent.substring(0, 100).replace(/<br>$/, '').trim() + '...'
+                : formattedContent;
+        }
+
+        // Add 'Read More' if content is truncated
+        let readMoreText = shouldTruncate ? '<span class="read-more">קרא עוד</span>' : '';
+
         newsItemElement.innerHTML = `
             <img src="${item.system.logo || ''}" alt="${item.system.name || ''} logo" class="logo">
             <h3>${item.title || ''}</h3>
             <div class="content">
-                <p>${item.content || ''}</p>
+                <p>${displayContent}</p>
+                ${readMoreText}
             </div>
             <div class="author-info">
                 <img src="${item.author.image || ''}" alt="${item.author.name || ''}">
@@ -84,6 +107,7 @@ function loadNewsItems() {
             </div>
             <span class="date">${formatDate(item.date) || ''}</span>
         `;
+        newsItemElement.addEventListener('click', () => openModal(item));
         newsGrid.appendChild(newsItemElement);
     }
     
@@ -93,6 +117,40 @@ function loadNewsItems() {
         document.getElementById('loadMoreBtn').style.display = 'none';
     } else {
         document.getElementById('loadMoreBtn').style.display = 'block';
+    }
+}
+
+// Function to open the modal with news item details
+function openModal(item) {
+    const modal = document.getElementById('newsModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalAuthorImg = document.getElementById('modalAuthorImg');
+    const modalAuthorName = document.getElementById('modalAuthorName');
+    const modalAuthorDescription = document.getElementById('modalAuthorDescription');
+    const modalDate = document.getElementById('modalDate');
+
+    modalTitle.textContent = item.title;
+    modalBody.innerHTML = item.content.replace(/\n/g, '<br>');
+    modalAuthorImg.src = item.author.image;
+    modalAuthorImg.alt = item.author.name;
+    modalAuthorName.textContent = item.author.name;
+    modalAuthorDescription.textContent = item.author.description;
+    modalDate.textContent = formatDate(item.date);
+
+    modal.style.display = 'block';
+}
+
+// Close the modal when clicking on <span> (x)
+document.querySelector('.close').onclick = function() {
+    document.getElementById('newsModal').style.display = 'none';
+}
+
+// Close the modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('newsModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
     }
 }
 
@@ -193,7 +251,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
         });
 
         if (response.ok) {
-            alert('תודה על ההרשמה! נחזור אליך בקרוב.');
+            alert('כיף שנרשמת! שלחנו לך הודעת ווצאפ');
             this.reset();
         } else {
             throw new Error('Failed to submit form');
