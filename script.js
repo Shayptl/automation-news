@@ -11,7 +11,7 @@ async function fetchNewsItems() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log('Fetched data:', data); // Log the fetched data
+        console.log('Fetched data:', data);
         if (Array.isArray(data)) {
             newsItems = data;
         } else {
@@ -21,17 +21,21 @@ async function fetchNewsItems() {
         populateExpertiseOptions();
     } catch (error) {
         console.error("Could not fetch news items:", error);
-        newsItems = []; // Set to empty array in case of error
+        newsItems = [];
     }
 }
 
 function populateExpertiseOptions() {
     const expertiseSelect = document.getElementById('expertise');
-    expertiseSelect.innerHTML = '<option value="">בחר תחום מומחיות</option>'; // Clear existing options
+    if (!expertiseSelect) {
+        console.error('Expertise select element not found');
+        return;
+    }
+    expertiseSelect.innerHTML = '<option value="">בחר תחום מומחיות</option>';
     const systems = new Set(newsItems.map(item => item.system.name));
     
     systems.forEach(system => {
-        if (system) { // Check if system name is not empty or undefined
+        if (system) {
             const option = document.createElement('option');
             option.value = system;
             option.textContent = system;
@@ -39,7 +43,6 @@ function populateExpertiseOptions() {
         }
     });
     
-    // Add 'Other' option
     const otherOption = document.createElement('option');
     otherOption.value = 'other';
     otherOption.textContent = 'אחר';
@@ -55,12 +58,20 @@ function formatDate(dateString) {
 
 function calculateItemsPerRow() {
     const newsGrid = document.getElementById('newsGrid');
-    const newsItemWidth = 250; // Approximate width of a news item including gap
+    if (!newsGrid) {
+        console.error('News grid element not found');
+        return 1;
+    }
+    const newsItemWidth = 250;
     return Math.floor(newsGrid.offsetWidth / newsItemWidth);
 }
 
 function loadNewsItems() {
     const newsGrid = document.getElementById('newsGrid');
+    if (!newsGrid) {
+        console.error('News grid element not found');
+        return;
+    }
     const itemsPerRow = calculateItemsPerRow();
     const itemsToLoad = itemsPerRow * 2;
     const endIndex = Math.min(currentIndex + itemsToLoad, newsItems.length);
@@ -70,16 +81,12 @@ function loadNewsItems() {
         const newsItemElement = document.createElement('div');
         newsItemElement.className = 'news-item';
         
-        // Replace newlines with <br> tags for proper display
         let formattedContent = item.content.replace(/\n/g, '<br>');
-        
-        // Check if content is long or contains an image
         let hasImage = formattedContent.includes('<img');
         let shouldTruncate = formattedContent.length > 100 || hasImage;
         let displayContent;
 
         if (hasImage) {
-            // If there's an image, show only the first paragraph or a portion of text before the image
             let textBeforeImage = formattedContent.split('<img')[0];
             displayContent = textBeforeImage.length > 100 ? textBeforeImage.substring(0, 100) + '...' : textBeforeImage;
         } else {
@@ -88,7 +95,6 @@ function loadNewsItems() {
                 : formattedContent;
         }
 
-        // Add 'Read More' if content is truncated
         let readMoreText = shouldTruncate ? '<span class="read-more">קרא עוד</span>' : '';
 
         newsItemElement.innerHTML = `
@@ -113,14 +119,12 @@ function loadNewsItems() {
     
     currentIndex = endIndex;
     
-    if (currentIndex >= newsItems.length) {
-        document.getElementById('loadMoreBtn').style.display = 'none';
-    } else {
-        document.getElementById('loadMoreBtn').style.display = 'block';
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.style.display = currentIndex >= newsItems.length ? 'none' : 'block';
     }
 }
 
-// Function to open the modal with news item details
 function openModal(item) {
     const modal = document.getElementById('newsModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -130,27 +134,18 @@ function openModal(item) {
     const modalAuthorDescription = document.getElementById('modalAuthorDescription');
     const modalDate = document.getElementById('modalDate');
 
-    modalTitle.textContent = item.title;
-    modalBody.innerHTML = item.content.replace(/\n/g, '<br>');
-    modalAuthorImg.src = item.author.image;
-    modalAuthorImg.alt = item.author.name;
-    modalAuthorName.textContent = item.author.name;
-    modalAuthorDescription.textContent = item.author.description;
-    modalDate.textContent = formatDate(item.date);
+    if (modal && modalTitle && modalBody && modalAuthorImg && modalAuthorName && modalAuthorDescription && modalDate) {
+        modalTitle.textContent = item.title;
+        modalBody.innerHTML = item.content.replace(/\n/g, '<br>');
+        modalAuthorImg.src = item.author.image;
+        modalAuthorImg.alt = item.author.name;
+        modalAuthorName.textContent = item.author.name;
+        modalAuthorDescription.textContent = item.author.description;
+        modalDate.textContent = formatDate(item.date);
 
-    modal.style.display = 'block';
-}
-
-// Close the modal when clicking on <span> (x)
-document.querySelector('.close').onclick = function() {
-    document.getElementById('newsModal').style.display = 'none';
-}
-
-// Close the modal when clicking outside of it
-window.onclick = function(event) {
-    const modal = document.getElementById('newsModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
+        modal.style.display = 'block';
+    } else {
+        console.error('One or more modal elements are missing');
     }
 }
 
@@ -159,105 +154,123 @@ async function initializeNewsGrid() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-    loadingSpinner.style.display = 'block';
-    newsGrid.innerHTML = ''; // Clear existing content
-    newsGrid.style.display = 'none';
-    loadMoreBtn.style.display = 'none';
+    if (loadingSpinner) loadingSpinner.style.display = 'block';
+    if (newsGrid) {
+        newsGrid.innerHTML = '';
+        newsGrid.style.display = 'none';
+    }
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
 
-    await fetchNewsItems(); // This now populates newsItems and expertise options
+    await fetchNewsItems();
 
-    loadingSpinner.style.display = 'none';
-    newsGrid.style.display = 'grid';
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    if (newsGrid) newsGrid.style.display = 'grid';
 
     loadNewsItems();
 }
 
-// Call this function when the page loads
-window.addEventListener('load', initializeNewsGrid);
+document.addEventListener('DOMContentLoaded', function() {
+    initializeNewsGrid();
 
-// Load more button functionality
-document.getElementById('loadMoreBtn').addEventListener('click', loadNewsItems);
+const form = document.getElementById('joinForm');
 
-// Recalculate and reload items on window resize
-let resizeTimer;
-window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-        const newsGrid = document.getElementById('newsGrid');
-        newsGrid.innerHTML = ''; // Clear existing content
-        currentIndex = 0; // Reset the index
-        loadNewsItems(); // Reload items
-    }, 250);
-});
-
-// Appreciation button functionality
-document.getElementById('appreciateBtn').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.open('https://shayptl.github.io/buy-me-coffee', '_blank');
-});
-
-// Floating appreciation button functionality
-const floatingBtn = document.getElementById('floatingAppreciateBtn');
-const mainAppreciateBtn = document.getElementById('appreciateBtn');
-
-floatingBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.open('https://shayptl.github.io/buy-me-coffee', '_blank');
-});
-
-window.addEventListener('scroll', function () {
-    const mainBtnRect = mainAppreciateBtn.getBoundingClientRect();
-    if (mainBtnRect.top <= window.innerHeight && mainBtnRect.bottom >= 0) {
-        floatingBtn.style.opacity = '0';
-        floatingBtn.style.pointerEvents = 'none';
-    } else {
-        floatingBtn.style.opacity = '1';
-        floatingBtn.style.pointerEvents = 'auto';
-    }
-});
-
-// Social media links
-document.getElementById('facebookLink').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.open('https://www.facebook.com/ShayDigitalServices', '_blank');
-});
-
-document.getElementById('twitterLink').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.open('https://twitter.com/ShayDigital', '_blank');
-});
-
-document.getElementById('linkedinLink').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.open('https://www.linkedin.com/company/shay-digital-services', '_blank');
-});
-
-// Join form submission
-document.getElementById('joinForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    console.log('Form submitted:', data);
-
-    // Send webhook
-    const webhookUrl = 'https://hook.integrator.boost.space/xk3ycvp1v7qeho3bdxemaiswvkn2q8bm';
-    try {
-        const response = await fetch(webhookUrl, {
+if (form) {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        const webhookUrl = 'https://hook.integrator.boost.space/xk3ycvp1v7qeho3bdxemaiswvkn2q8bm';
+        
+        fetch(webhookUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(result => {
+            console.log('Success:', result);
+            if (result === 'Accepted') {
+                alert('הטופס נשלח בהצלחה!');
+                form.reset();
+            } else {
+                throw new Error('Unexpected response');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב.');
         });
+    });
+} else {
+    console.error('Join form not found');
+}
 
-        if (response.ok) {
-            alert('כיף שנרשמת! שלחנו לך הודעת ווצאפ');
-            this.reset();
-        } else {
-            throw new Error('Failed to submit form');
+    const modal = document.getElementById('newsModal');
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn && modal) {
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
         }
-    } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב מאוחר יותר.');
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    const appreciateBtn = document.getElementById('appreciateBtn');
+    const floatingAppreciateBtn = document.getElementById('floatingAppreciateBtn');
+
+    function openAppreciationLink(e) {
+        e.preventDefault();
+        window.open('https://shayptl.github.io/buy-me-coffee', '_blank');
+    }
+
+    if (appreciateBtn) {
+        appreciateBtn.addEventListener('click', openAppreciationLink);
+    }
+    if (floatingAppreciateBtn) {
+        floatingAppreciateBtn.addEventListener('click', openAppreciationLink);
+    }
+
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', loadNewsItems);
+    }
+
+    window.addEventListener('resize', function() {
+        clearTimeout(window.resizeTimer);
+        window.resizeTimer = setTimeout(function() {
+            const newsGrid = document.getElementById('newsGrid');
+            if (newsGrid) {
+                newsGrid.innerHTML = '';
+                currentIndex = 0;
+                loadNewsItems();
+            }
+        }, 250);
+    });
+
+    const mainAppreciateBtn = document.getElementById('appreciateBtn');
+    if (mainAppreciateBtn && floatingAppreciateBtn) {
+        window.addEventListener('scroll', function () {
+            const mainBtnRect = mainAppreciateBtn.getBoundingClientRect();
+            if (mainBtnRect.top <= window.innerHeight && mainBtnRect.bottom >= 0) {
+                floatingAppreciateBtn.style.opacity = '0';
+                floatingAppreciateBtn.style.pointerEvents = 'none';
+            } else {
+                floatingAppreciateBtn.style.opacity = '1';
+                floatingAppreciateBtn.style.pointerEvents = 'auto';
+            }
+        });
     }
 });
